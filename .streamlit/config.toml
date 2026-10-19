@@ -1,0 +1,4 @@
+# This disables Streamlit's file watcher to hide harmless "No module named 'torchvision'" errors from transformers.
+
+[server]
+fileWatcherType = "none"
