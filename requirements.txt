@@ -6,3 +6,5 @@ python-dotenv
 google-genai      # for Gemini (default)
 openai            # only needed if LLM_PROVIDER=openai
 streamlit         # only needed for the simple web UI (ui.py)
+
+bcrypt            # Password hashing algorithm 

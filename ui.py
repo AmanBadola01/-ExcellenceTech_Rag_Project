@@ -1,43 +1,38 @@
-"""
-SIMPLE WEB UI (Streamlit)
--------------------------
-Run with:
-    streamlit run ui.py
-
-Upload a TXT/PDF (or use the sample), type a question, get an answer.
-"""
-
 import os
 import tempfile
 
 import streamlit as st
 from dotenv import load_dotenv
 
+import auth
+import memory
 from rag.pipeline import RAGPipeline
 
 load_dotenv()
+memory.init_db()
 
-# ---------- Header: photo + title ----------
-# Put your image at assets/logo.png (or change this path to your file).
 LOGO_PATH = "assets/logo.png"
 
-# Browser tab title + tab icon
 st.set_page_config(
     page_title="Excellence Q&A RAG",
-    page_icon=LOGO_PATH if os.path.exists(LOGO_PATH) else "📘",
+    page_icon=LOGO_PATH if os.path.exists(LOGO_PATH) else None,
 )
 
 if os.path.exists(LOGO_PATH):
-    # Two columns: small photo on the left, title on the right
     img_col, title_col = st.columns([1, 5], vertical_alignment="center")
     img_col.image(LOGO_PATH, width=90)
     title_col.title("Excellence Q&A RAG")
 else:
-    # No photo found -> show just the title, so the app never crashes
     st.title("Excellence Q&A RAG")
 
+# ---------- Login gate: nothing below runs until the user is logged in ----------
+if "user_id" not in st.session_state:
+    auth.show_login()
+    st.stop()
 
-# Load the models only once and reuse them across page refreshes
+user_id = st.session_state["user_id"]
+
+
 @st.cache_resource
 def get_pipeline():
     return RAGPipeline()
@@ -45,11 +40,40 @@ def get_pipeline():
 
 pipeline = get_pipeline()
 
-# 1) Pick a document: an uploaded file, or the sample document by default
+if "session_id" not in st.session_state:
+    st.session_state["session_id"] = memory.new_session_id()
+
+# ---------- Sidebar: account + chat history ----------
+with st.sidebar:
+    st.caption(f"Logged in as {st.session_state['email']}")
+    if st.button("Logout", use_container_width=True):
+        st.session_state.clear()
+        st.rerun()
+
+    st.divider()
+    st.header("Chats")
+    if st.button("New chat", use_container_width=True):
+        st.session_state["session_id"] = memory.new_session_id()
+        st.rerun()
+
+    for s in memory.list_sessions(user_id):
+        title = (s["title"] or "Untitled")[:35]
+        is_current = s["session_id"] == st.session_state["session_id"]
+        if st.button(
+            title,
+            key=s["session_id"],
+            use_container_width=True,
+            type="primary" if is_current else "secondary",
+        ):
+            st.session_state["session_id"] = s["session_id"]
+            st.rerun()
+
+session_id = st.session_state["session_id"]
+
+# ---------- Document ----------
 uploaded = st.file_uploader("Upload a TXT or PDF (optional)", type=["txt", "pdf"])
 
 if uploaded:
-    # Save the upload to a temporary file so the loader can read it from disk
     suffix = os.path.splitext(uploaded.name)[1]
     with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
         tmp.write(uploaded.getvalue())
@@ -57,7 +81,6 @@ if uploaded:
 else:
     doc_path = doc_name = "data/company_policy.txt"
 
-# 2) Index the document only when it changes (not on every question)
 if st.session_state.get("indexed_doc") != doc_name:
     with st.spinner("Indexing document..."):
         num_chunks = pipeline.index_document(doc_path)
@@ -66,16 +89,40 @@ if st.session_state.get("indexed_doc") != doc_name:
 
 st.caption(f"Using: {doc_name} ({st.session_state['num_chunks']} chunks)")
 
-# 3) Ask a question and show the answer + the chunks it came from
-question = st.text_input("Ask a question about the document")
+# ---------- Past messages ----------
+history = memory.load_history(session_id, user_id)
+for m in history:
+    label = "User" if m["role"] == "user" else "Assistant"
+    st.markdown(f"**{label}**")
+    st.write(m["content"])
+    st.divider()
+
+# ---------- New question ----------
+question = st.chat_input("Ask a question about the document")
 
 if question:
-    with st.spinner("Thinking..."):
-        result = pipeline.ask(question)
+    st.markdown("**User**")
+    st.write(question)
+    st.divider()
 
-    st.write("**Answer:**", result["answer"])
+    st.markdown("**Assistant**")
+    with st.spinner("Thinking..."):
+        standalone = memory.rewrite_question(question, history)
+        result = pipeline.ask(standalone)
+
+    st.write(result["answer"])
+
+    if standalone != question:
+        st.caption(f"Searched as: {standalone}")
 
     with st.expander("Retrieved chunks"):
         for i, (chunk, score) in enumerate(result["sources"], start=1):
             st.markdown(f"**Chunk {i}** (similarity {score:.2f})")
             st.write(chunk)
+
+    memory.save_message(session_id, "user", question, user_id)
+    memory.save_message(session_id, "assistant", result["answer"], user_id)
+
+    # refresh so the sidebar shows the new chat title
+    if not history:
+        st.rerun()
