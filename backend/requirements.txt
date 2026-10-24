@@ -1,0 +1,12 @@
+pypdf>=4.0
+sentence-transformers>=2.7
+faiss-cpu>=1.8
+numpy
+python-dotenv
+google-genai      # for Gemini 
+streamlit         # only needed for the simple web UI (ui.py)
+
+bcrypt            # Password hashing algorithm 
+fastapi
+uvicorn
+pyjwt

@@ -1,3 +1,11 @@
+"""
+MEMORY + USERS
+--------------
+1. Users: signup/login with bcrypt-hashed passwords (SQLite).
+2. Long-term memory: chat history saved per user (survives restarts).
+3. Short-term memory: rewrite follow-up questions into standalone ones.
+"""
+
 import os
 import sqlite3
 import uuid
@@ -62,7 +70,7 @@ def create_user(email: str, password: str):
     if len(password) < 6:
         return None, "Password must be at least 6 characters."
 
-    hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode() #Hashing the password
+    hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
     try:
         with _conn() as con:

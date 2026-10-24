@@ -1,11 +1,8 @@
 """
 RAG PIPELINE
-------------
 Connects all 6 steps:
 
     Load -> Chunk -> Embed -> Store (FAISS) -> Retrieve top 3 -> Generate answer
-
-Both the CLI (app.py) and the web UI (ui.py) use this class.
 """
 
 from typing import Dict, List
