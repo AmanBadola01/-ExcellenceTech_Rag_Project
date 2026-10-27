@@ -5,7 +5,7 @@ import { api, clearAuth, getEmail, getToken, saveAuth } from "@/lib/api";
 type AuthContextValue = {
   token: string | null;
   email: string | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, turnstileToken?: string | null) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   logout: () => void;
 };
@@ -17,8 +17,12 @@ async function authenticate(
   email: string,
   password: string,
   onDone: (token: string, email: string) => void,
+  turnstileToken?: string | null,
 ) {
-  const result: any = kind === "login" ? await api.login(email, password) : await api.signup(email, password);
+  const result: any =
+    kind === "login"
+      ? await api.login(email, password, turnstileToken)
+      : await api.signup(email, password);
   const token = result.access_token;
   if (!token) throw new Error("The server did not return an access token.");
   const resolvedEmail = result.email ?? email;
@@ -33,8 +37,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value: AuthContextValue = {
     token,
     email,
-    login: (emailValue, password) => authenticate("login", emailValue, password, (t, e) => { setToken(t); setEmail(e); }),
-    signup: (emailValue, password) => authenticate("signup", emailValue, password, (t, e) => { setToken(t); setEmail(e); }),
+    login: (emailValue, password, turnstileToken) =>
+      authenticate(
+        "login",
+        emailValue,
+        password,
+        (t, e) => {
+          setToken(t);
+          setEmail(e);
+        },
+        turnstileToken,
+      ),
+    signup: (emailValue, password) =>
+      authenticate("signup", emailValue, password, (t, e) => {
+        setToken(t);
+        setEmail(e);
+      }),
     logout: () => {
       clearAuth();
       setToken(null);

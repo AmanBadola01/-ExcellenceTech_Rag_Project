@@ -10,3 +10,6 @@ bcrypt            # Password hashing algorithm
 fastapi
 uvicorn
 pyjwt
+groq
+groq
+
