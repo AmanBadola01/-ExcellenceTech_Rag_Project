@@ -7,7 +7,9 @@ import { nitro } from "nitro/vite";
 
 export default defineConfig({
   server: {
-    allowedHosts: [".trycloudflare.com"],
+    host: true,
+    port: 3000,
+    allowedHosts: true,
     proxy: {
       "/api": {
         target: "http://127.0.0.1:8000",

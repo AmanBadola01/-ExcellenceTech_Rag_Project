@@ -44,8 +44,45 @@ function isH3SwallowedErrorBody(body: string): boolean {
   }
 }
 
+const BACKEND_BASE = (process.env.BACKEND_URL || "http://127.0.0.1:8000").replace(/\/+$/, "");
+
+async function proxyApi(request: Request): Promise<Response> {
+  const url = new URL(request.url);
+  const targetPath = url.pathname.replace(/^\/api/, "") || "/";
+  const targetUrl = `${BACKEND_BASE}${targetPath}${url.search}`;
+
+  const headers = new Headers(request.headers);
+  headers.delete("host");
+
+  const hasBody = !["GET", "HEAD"].includes(request.method);
+  const body = hasBody ? await request.arrayBuffer() : undefined;
+
+  try {
+    return await fetch(targetUrl, {
+      method: request.method,
+      headers,
+      body,
+    });
+  } catch {
+    return new Response(
+      JSON.stringify({
+        detail: `Cannot connect to backend server at ${BACKEND_BASE}. Make sure the FastAPI backend is running (uvicorn main:app --reload).`,
+      }),
+      {
+        status: 502,
+        headers: { "content-type": "application/json" },
+      },
+    );
+  }
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
+    const url = new URL(request.url);
+    if (url.pathname === "/api" || url.pathname.startsWith("/api/")) {
+      return await proxyApi(request);
+    }
+
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);

@@ -10,11 +10,27 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ChatRouteImport } from './routes/chat'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as StudioRouteImport } from './routes/studio'
+import { Route as StudioBrandVoicesRouteImport } from './routes/studio/brand-voices'
+import { Route as StudioCompanyRouteImport } from './routes/studio/company'
+import { Route as StudioGenerateRouteImport } from './routes/studio/generate'
+import { Route as StudioProjectsRouteImport } from './routes/studio/projects'
+import { Route as StudioContentContentIdRouteImport } from './routes/studio/content.$contentId'
+import { Route as StudioProjectsIndexRouteImport } from './routes/studio/projects.index'
+import { Route as StudioProjectsProjectIdRouteImport } from './routes/studio/projects.$projectId'
+import { Route as StudioContentContentIdIndexRouteImport } from './routes/studio/content.$contentId.index'
+import { Route as StudioContentContentIdRepurposeRouteImport } from './routes/studio/content.$contentId.repurpose'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -22,31 +38,154 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudioRoute = StudioRouteImport.update({
+  id: '/studio',
+  path: '/studio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudioBrandVoicesRoute = StudioBrandVoicesRouteImport.update({
+  id: '/brand-voices',
+  path: '/brand-voices',
+  getParentRoute: () => StudioRoute,
+} as any)
+const StudioCompanyRoute = StudioCompanyRouteImport.update({
+  id: '/company',
+  path: '/company',
+  getParentRoute: () => StudioRoute,
+} as any)
+const StudioGenerateRoute = StudioGenerateRouteImport.update({
+  id: '/generate',
+  path: '/generate',
+  getParentRoute: () => StudioRoute,
+} as any)
+const StudioProjectsRoute = StudioProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => StudioRoute,
+} as any)
+const StudioContentContentIdRoute = StudioContentContentIdRouteImport.update({
+  id: '/content/$contentId',
+  path: '/content/$contentId',
+  getParentRoute: () => StudioRoute,
+} as any)
+const StudioProjectsIndexRoute = StudioProjectsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => StudioProjectsRoute,
+} as any)
+const StudioProjectsProjectIdRoute = StudioProjectsProjectIdRouteImport.update({
+  id: '/$projectId',
+  path: '/$projectId',
+  getParentRoute: () => StudioProjectsRoute,
+} as any)
+const StudioContentContentIdIndexRoute =
+  StudioContentContentIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => StudioContentContentIdRoute,
+  } as any)
+const StudioContentContentIdRepurposeRoute =
+  StudioContentContentIdRepurposeRouteImport.update({
+    id: '/repurpose',
+    path: '/repurpose',
+    getParentRoute: () => StudioContentContentIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/chat': typeof ChatRoute
   '/login': typeof LoginRoute
+  '/studio': typeof StudioRouteWithChildren
+  '/studio/brand-voices': typeof StudioBrandVoicesRoute
+  '/studio/company': typeof StudioCompanyRoute
+  '/studio/generate': typeof StudioGenerateRoute
+  '/studio/projects': typeof StudioProjectsRouteWithChildren
+  '/studio/content/$contentId': typeof StudioContentContentIdRouteWithChildren
+  '/studio/projects/$projectId': typeof StudioProjectsProjectIdRoute
+  '/studio/projects/': typeof StudioProjectsIndexRoute
+  '/studio/content/$contentId/repurpose': typeof StudioContentContentIdRepurposeRoute
+  '/studio/content/$contentId/': typeof StudioContentContentIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/chat': typeof ChatRoute
   '/login': typeof LoginRoute
+  '/studio': typeof StudioRouteWithChildren
+  '/studio/brand-voices': typeof StudioBrandVoicesRoute
+  '/studio/company': typeof StudioCompanyRoute
+  '/studio/generate': typeof StudioGenerateRoute
+  '/studio/projects/$projectId': typeof StudioProjectsProjectIdRoute
+  '/studio/projects': typeof StudioProjectsIndexRoute
+  '/studio/content/$contentId/repurpose': typeof StudioContentContentIdRepurposeRoute
+  '/studio/content/$contentId': typeof StudioContentContentIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/chat': typeof ChatRoute
   '/login': typeof LoginRoute
+  '/studio': typeof StudioRouteWithChildren
+  '/studio/brand-voices': typeof StudioBrandVoicesRoute
+  '/studio/company': typeof StudioCompanyRoute
+  '/studio/generate': typeof StudioGenerateRoute
+  '/studio/projects': typeof StudioProjectsRouteWithChildren
+  '/studio/content/$contentId': typeof StudioContentContentIdRouteWithChildren
+  '/studio/projects/$projectId': typeof StudioProjectsProjectIdRoute
+  '/studio/projects/': typeof StudioProjectsIndexRoute
+  '/studio/content/$contentId/repurpose': typeof StudioContentContentIdRepurposeRoute
+  '/studio/content/$contentId/': typeof StudioContentContentIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login'
+  fullPaths:
+    | '/'
+    | '/chat'
+    | '/login'
+    | '/studio'
+    | '/studio/brand-voices'
+    | '/studio/company'
+    | '/studio/generate'
+    | '/studio/projects'
+    | '/studio/content/$contentId'
+    | '/studio/projects/$projectId'
+    | '/studio/projects/'
+    | '/studio/content/$contentId/repurpose'
+    | '/studio/content/$contentId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login'
-  id: '__root__' | '/' | '/login'
+  to:
+    | '/'
+    | '/chat'
+    | '/login'
+    | '/studio'
+    | '/studio/brand-voices'
+    | '/studio/company'
+    | '/studio/generate'
+    | '/studio/projects/$projectId'
+    | '/studio/projects'
+    | '/studio/content/$contentId/repurpose'
+    | '/studio/content/$contentId'
+  id:
+    | '__root__'
+    | '/'
+    | '/chat'
+    | '/login'
+    | '/studio'
+    | '/studio/brand-voices'
+    | '/studio/company'
+    | '/studio/generate'
+    | '/studio/projects'
+    | '/studio/content/$contentId'
+    | '/studio/projects/$projectId'
+    | '/studio/projects/'
+    | '/studio/content/$contentId/repurpose'
+    | '/studio/content/$contentId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ChatRoute: typeof ChatRoute
   LoginRoute: typeof LoginRoute
+  StudioRoute: typeof StudioRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -58,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -65,12 +211,133 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/studio': {
+      id: '/studio'
+      path: '/studio'
+      fullPath: '/studio'
+      preLoaderRoute: typeof StudioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio/brand-voices': {
+      id: '/studio/brand-voices'
+      path: '/brand-voices'
+      fullPath: '/studio/brand-voices'
+      preLoaderRoute: typeof StudioBrandVoicesRouteImport
+      parentRoute: typeof StudioRoute
+    }
+    '/studio/company': {
+      id: '/studio/company'
+      path: '/company'
+      fullPath: '/studio/company'
+      preLoaderRoute: typeof StudioCompanyRouteImport
+      parentRoute: typeof StudioRoute
+    }
+    '/studio/generate': {
+      id: '/studio/generate'
+      path: '/generate'
+      fullPath: '/studio/generate'
+      preLoaderRoute: typeof StudioGenerateRouteImport
+      parentRoute: typeof StudioRoute
+    }
+    '/studio/projects': {
+      id: '/studio/projects'
+      path: '/projects'
+      fullPath: '/studio/projects'
+      preLoaderRoute: typeof StudioProjectsRouteImport
+      parentRoute: typeof StudioRoute
+    }
+    '/studio/content/$contentId': {
+      id: '/studio/content/$contentId'
+      path: '/content/$contentId'
+      fullPath: '/studio/content/$contentId'
+      preLoaderRoute: typeof StudioContentContentIdRouteImport
+      parentRoute: typeof StudioRoute
+    }
+    '/studio/projects/': {
+      id: '/studio/projects/'
+      path: '/'
+      fullPath: '/studio/projects/'
+      preLoaderRoute: typeof StudioProjectsIndexRouteImport
+      parentRoute: typeof StudioProjectsRoute
+    }
+    '/studio/projects/$projectId': {
+      id: '/studio/projects/$projectId'
+      path: '/$projectId'
+      fullPath: '/studio/projects/$projectId'
+      preLoaderRoute: typeof StudioProjectsProjectIdRouteImport
+      parentRoute: typeof StudioProjectsRoute
+    }
+    '/studio/content/$contentId/': {
+      id: '/studio/content/$contentId/'
+      path: '/'
+      fullPath: '/studio/content/$contentId/'
+      preLoaderRoute: typeof StudioContentContentIdIndexRouteImport
+      parentRoute: typeof StudioContentContentIdRoute
+    }
+    '/studio/content/$contentId/repurpose': {
+      id: '/studio/content/$contentId/repurpose'
+      path: '/repurpose'
+      fullPath: '/studio/content/$contentId/repurpose'
+      preLoaderRoute: typeof StudioContentContentIdRepurposeRouteImport
+      parentRoute: typeof StudioContentContentIdRoute
+    }
   }
 }
 
+interface StudioProjectsRouteChildren {
+  StudioProjectsProjectIdRoute: typeof StudioProjectsProjectIdRoute
+  StudioProjectsIndexRoute: typeof StudioProjectsIndexRoute
+}
+
+const StudioProjectsRouteChildren: StudioProjectsRouteChildren = {
+  StudioProjectsProjectIdRoute: StudioProjectsProjectIdRoute,
+  StudioProjectsIndexRoute: StudioProjectsIndexRoute,
+}
+
+const StudioProjectsRouteWithChildren = StudioProjectsRoute._addFileChildren(
+  StudioProjectsRouteChildren,
+)
+
+interface StudioContentContentIdRouteChildren {
+  StudioContentContentIdRepurposeRoute: typeof StudioContentContentIdRepurposeRoute
+  StudioContentContentIdIndexRoute: typeof StudioContentContentIdIndexRoute
+}
+
+const StudioContentContentIdRouteChildren: StudioContentContentIdRouteChildren =
+  {
+    StudioContentContentIdRepurposeRoute: StudioContentContentIdRepurposeRoute,
+    StudioContentContentIdIndexRoute: StudioContentContentIdIndexRoute,
+  }
+
+const StudioContentContentIdRouteWithChildren =
+  StudioContentContentIdRoute._addFileChildren(
+    StudioContentContentIdRouteChildren,
+  )
+
+interface StudioRouteChildren {
+  StudioBrandVoicesRoute: typeof StudioBrandVoicesRoute
+  StudioCompanyRoute: typeof StudioCompanyRoute
+  StudioGenerateRoute: typeof StudioGenerateRoute
+  StudioProjectsRoute: typeof StudioProjectsRouteWithChildren
+  StudioContentContentIdRoute: typeof StudioContentContentIdRouteWithChildren
+}
+
+const StudioRouteChildren: StudioRouteChildren = {
+  StudioBrandVoicesRoute: StudioBrandVoicesRoute,
+  StudioCompanyRoute: StudioCompanyRoute,
+  StudioGenerateRoute: StudioGenerateRoute,
+  StudioProjectsRoute: StudioProjectsRouteWithChildren,
+  StudioContentContentIdRoute: StudioContentContentIdRouteWithChildren,
+}
+
+const StudioRouteWithChildren =
+  StudioRoute._addFileChildren(StudioRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ChatRoute: ChatRoute,
   LoginRoute: LoginRoute,
+  StudioRoute: StudioRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
