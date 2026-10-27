@@ -37,6 +37,8 @@ function GeneratePage() {
   const [title, setTitle] = useState("");
   const [prompt, setPrompt] = useState("");
   const [includeCompanyContext, setIncludeCompanyContext] = useState(true);
+  const [seoKeywords, setSeoKeywords] = useState<string[]>([]);
+  const [keywordInput, setKeywordInput] = useState("");
 
   // Generation status
   const [generating, setGenerating] = useState(false);
@@ -82,6 +84,7 @@ function GeneratePage() {
         voice_id: selectedVoiceId || null,
         project_id: selectedProjectId || null,
         include_company_context: includeCompanyContext,
+        seo_keywords: seoKeywords.join(", "),
       });
       setResultPiece(generated);
     } catch (err) {
@@ -99,6 +102,40 @@ function GeneratePage() {
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // Fallback
+    }
+  };
+
+  // ── SEO keyword chip handlers ──
+  const addKeyword = (raw: string) => {
+    const kw = raw.trim().toLowerCase().replace(/^,+|,+$/g, "");
+    if (!kw) return;
+    setSeoKeywords((prev) => (prev.includes(kw) ? prev : [...prev, kw]));
+  };
+
+  const removeKeyword = (kw: string) => {
+    setSeoKeywords((prev) => prev.filter((k) => k !== kw));
+  };
+
+  const handleKeywordInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.includes(",")) {
+      // Commit anything before the comma, keep the remainder for typing
+      const parts = value.split(",");
+      const remainder = parts.pop() ?? "";
+      parts.forEach(addKeyword);
+      setKeywordInput(remainder);
+    } else {
+      setKeywordInput(value);
+    }
+  };
+
+  const handleKeywordKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addKeyword(keywordInput);
+      setKeywordInput("");
+    } else if (e.key === "Backspace" && !keywordInput && seoKeywords.length > 0) {
+      setSeoKeywords((prev) => prev.slice(0, -1));
     }
   };
 
@@ -237,6 +274,50 @@ function GeneratePage() {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 className="mt-1.5 w-full resize-y rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+            </div>
+
+            {/* SEO Optimization */}
+            <div>
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-semibold text-foreground">SEO Optimization</label>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Optional</span>
+              </div>
+              <p className="mt-0.5 text-[11px] text-muted-foreground">
+                Add target keywords the AI will naturally weave into your content for better search ranking.
+              </p>
+
+              {seoKeywords.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {seoKeywords.map((kw) => (
+                    <span
+                      key={kw}
+                      className="inline-flex items-center gap-1 rounded-full border border-sky-800/50 bg-sky-950/70 px-2.5 py-1 text-xs font-medium text-sky-400"
+                    >
+                      {kw}
+                      <button
+                        type="button"
+                        onClick={() => removeKeyword(kw)}
+                        aria-label={`Remove keyword ${kw}`}
+                        className="text-sky-500 transition-colors hover:text-sky-300 focus-visible:outline-none"
+                      >
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                          <line x1="18" y1="6" x2="6" y2="18" />
+                          <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              <input
+                type="text"
+                placeholder="Type a keyword and press Enter (e.g. AI analytics, real-time dashboards)"
+                value={keywordInput}
+                onChange={handleKeywordInputChange}
+                onKeyDown={handleKeywordKeyDown}
+                className="mt-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
 

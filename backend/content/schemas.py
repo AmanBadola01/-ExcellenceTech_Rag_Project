@@ -78,6 +78,7 @@ class GenerateContentRequest(BaseModel):
     voice_id: Optional[str] = None
     project_id: Optional[str] = None
     include_company_context: bool = True
+    seo_keywords: str = ""  # Comma-separated keywords the LLM must naturally include
 
 
 class ContentPieceUpdate(BaseModel):

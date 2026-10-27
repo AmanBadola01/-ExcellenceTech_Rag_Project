@@ -301,6 +301,20 @@ def generate_and_save_piece(user_id: str, data: GenerateContentRequest) -> dict:
             # User hasn't filled company profile yet — proceed without error
             pass
 
+    # SEO keyword requirements — weave into copy for better search ranking
+    seo_keywords = [
+        kw.strip()
+        for kw in getattr(data, "seo_keywords", "").split(",")
+        if kw.strip()
+    ]
+    if seo_keywords:
+        system_parts.append(
+            "SEO Optimization Requirements:\n"
+            f"- Naturally weave these target keywords into the copy: {', '.join(seo_keywords)}.\n"
+            "- Place them in headings, subheadings, and body text where they read naturally.\n"
+            "- Do not keyword-stuff; readability and value come first."
+        )
+
     system_prompt = "\n\n".join(system_parts)
 
     # 3. Format type-specific prompt instructions
@@ -339,6 +353,7 @@ def generate_and_save_piece(user_id: str, data: GenerateContentRequest) -> dict:
         "mode": mode,
         "model_used": "openai/gpt-oss-120b" if mode == "quality" else "openai/gpt-oss-20b",
         "include_company_context": data.include_company_context,
+        "seo_keywords": seo_keywords,
     })
 
     piece_data = ContentPieceCreate(

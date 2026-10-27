@@ -129,6 +129,7 @@ export type GenerateContentPayload = {
   voice_id?: string | null;
   project_id?: string | null;
   include_company_context?: boolean;
+  seo_keywords?: string;
 };
 
 // Brand voice persona

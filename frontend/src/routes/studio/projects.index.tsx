@@ -87,8 +87,12 @@ function ProjectsIndexPage() {
             setCreateError("");
             setIsModalOpen(true);
           }}
-          className="text-sm font-medium text-sky-500 transition-colors hover:text-sky-400 focus-visible:outline-none focus-visible:underline"
+          className="inline-flex shrink-0 items-center gap-2 rounded-md bg-[hsl(var(--sidebar-primary))] px-4 py-2.5 text-sm font-semibold text-[hsl(var(--sidebar-primary-foreground))] shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
           New project
         </button>
       </div>
@@ -109,6 +113,14 @@ function ProjectsIndexPage() {
               className="h-36 animate-pulse rounded-2xl border border-border/50 bg-card/40 p-6"
             />
           ))}
+        </div>
+      ) : projects.length === 0 ? (
+        /* ── Empty State ── */
+        <div className="rounded-2xl border border-dashed border-border/70 bg-card/30 p-10 text-center">
+          <h2 className="text-base font-semibold text-foreground">No projects yet</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Use "New project" above to group your campaigns, blog drafts, and ad copy.
+          </p>
         </div>
       ) : (
         /* ── Grid of Project Cards ── */
@@ -151,24 +163,6 @@ function ProjectsIndexPage() {
               </div>
             </Link>
           ))}
-
-          {/* ── Dashed "+ Create project" Card ── */}
-          <button
-            type="button"
-            onClick={() => {
-              setCreateError("");
-              setIsModalOpen(true);
-            }}
-            className="flex min-h-[148px] flex-col items-center justify-center rounded-2xl border border-dashed border-border/80 bg-transparent p-6 text-sm font-medium text-muted-foreground transition-all hover:border-foreground/50 hover:bg-card/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <div className="flex items-center gap-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-              <span>Create project</span>
-            </div>
-          </button>
         </div>
       )}
 
