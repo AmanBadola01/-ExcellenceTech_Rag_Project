@@ -1,0 +1,19 @@
+{
+  "document_type": "Receipt",
+  "fields": [
+    { "name": "merchant_name", "label": "Merchant", "category": "Names", "color": "#f97316", "required": true },
+    { "name": "receipt_date", "label": "Date", "category": "Dates", "color": "#3b82f6", "required": true },
+    { "name": "receipt_time", "label": "Time", "category": "Dates", "color": "#3b82f6", "required": false },
+    { "name": "subtotal", "label": "Subtotal", "category": "Amounts", "color": "#22c55e", "required": false },
+    { "name": "tax_amount", "label": "Tax", "category": "Amounts", "color": "#22c55e", "required": false },
+    { "name": "tip_amount", "label": "Tip", "category": "Amounts", "color": "#22c55e", "required": false },
+    { "name": "total_amount", "label": "Total", "category": "Amounts", "color": "#22c55e", "required": true },
+    { "name": "payment_method", "label": "Payment Method", "category": "IDs", "color": "#a855f7", "required": false },
+    { "name": "card_last_4", "label": "Card Last 4", "category": "IDs", "color": "#a855f7", "required": false }
+  ],
+  "table": {
+    "name": "Items",
+    "columns": ["Item", "Qty", "Price", "Amount"]
+  }
+}
+

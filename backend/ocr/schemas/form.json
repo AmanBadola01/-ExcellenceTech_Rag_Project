@@ -1,0 +1,12 @@
+{
+  "document_type": "Form",
+  "fields": [
+    { "name": "form_title", "label": "Form Title", "category": "Names", "color": "#f97316", "required": false },
+    { "name": "applicant_name", "label": "Applicant Name", "category": "Names", "color": "#f97316", "required": false },
+    { "name": "submission_date", "label": "Submission Date", "category": "Dates", "color": "#3b82f6", "required": false },
+    { "name": "application_id", "label": "Application ID", "category": "IDs", "color": "#a855f7", "required": false },
+    { "name": "checkboxes", "label": "Checkboxes", "category": "IDs", "color": "#a855f7", "required": false },
+    { "name": "signature_present", "label": "Signature Present", "category": "IDs", "color": "#a855f7", "required": false }
+  ]
+}
+

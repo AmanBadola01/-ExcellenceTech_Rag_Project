@@ -1,104 +1,116 @@
-# Mini RAG Q&A System
+# Excellence AI Platform
 
-A simple **Retrieval-Augmented Generation (RAG)** system that answers questions about a document (TXT or PDF), using **only** the information inside that document.
+A unified full-stack AI platform combining:
+1. **Q&A RAG**: Semantic retrieval-augmented question answering over documents.
+2. **AI Content Studio**: Multi-format content generation, repurposing, and brand voices.
+3. **AI Document Processing & OCR Pipeline**: Intelligent dual-extraction OCR pipeline combining OpenCV image preprocessing, EasyOCR token bounding boxes, and Google Gemini Vision structured field/table extraction.
 
-## How it works
+---
 
-```
-                 ┌──────────── Indexing (once per document) ────────────┐
- Document  ──►  1. Load  ──►  2. Chunk  ──►  3. Embed  ──►  4. Store in FAISS
- (.txt/.pdf)     (pypdf)     (200 words,     (MiniLM)
-                              40 overlap)
-
-                 ┌──────────── Answering (every question) ──────────────┐
- Question  ──►  Embed  ──►  5. Retrieve top 3 chunks  ──►  6. LLM answers
-                                (cosine similarity)         from those chunks only
-```
-
-| Step | File | What it does |
-|---|---|---|
-| 1. Load | `rag/loader.py` | Reads text from a `.txt` or `.pdf` file |
-| 2. Chunk | `rag/chunker.py` | Splits text into 200-word chunks with 40-word overlap |
-| 3. Embed | `rag/embedder.py` | Converts chunks into vectors with Sentence Transformers (`all-MiniLM-L6-v2`) |
-| 4. Store | `rag/vector_store.py` | Saves the vectors in a FAISS index |
-| 5. Retrieve | `rag/vector_store.py` | Finds the top 3 chunks most similar to the question |
-| 6. Generate | `rag/generator.py` | Sends the chunks + question to an LLM (Gemini or OpenAI) |
-| Glue | `rag/pipeline.py` | Connects all the steps |
-
-## Project structure
+## Architecture Overview
 
 ```
-mini-rag-qa/
-├── app.py                  # Command-line interface
-├── ui.py                   # Simple web UI (Streamlit)
-├── rag/
-│   ├── loader.py           # Step 1
-│   ├── chunker.py          # Step 2
-│   ├── embedder.py         # Step 3
-│   ├── vector_store.py     # Steps 4 & 5
-│   ├── generator.py        # Step 6
-│   └── pipeline.py         # Connects everything
-├── data/
-│   └── company_policy.txt  # Sample document
-├── test_queries.md         # Sample questions and expected answers
-├── requirements.txt
-└── .env
+                      ┌────────────────────────────────────────┐
+                      │    React.js + TanStack Router (UI)     │
+                      │  [ Q&A · Studio · Documents (OCR) ]   │
+                      └──────────────────┬─────────────────────┘
+                                         │ HTTP / REST
+                      ┌──────────────────▼─────────────────────┐
+                      │            FastAPI Backend             │
+                      │  /api/auth   /api/rag   /api/content   │
+                      │               /api/ocr                 │
+                      └────┬─────────────┬─────────────┬───────┘
+                           │             │             │
+              ┌────────────▼──┐   ┌──────▼──────┐   ┌──▼───────────────────┐
+              │  RAG Engine   │   │   Content   │   │   OCR & Document AI  │
+              │  FAISS Vector │   │   Studio    │   │  • OpenCV Deskewing  │
+              │  Embeddings   │   │  (Groq LLM) │   │  • EasyOCR (BBoxes)  │
+              │  Gemini Gen   │   │             │   │  • Gemini 3.8 Flash  │
+              └───────────────┘   └─────────────┘   │  • Table & CSV/Excel │
+                                                    └──────────────────────┘
 ```
 
-## Setup
+---
 
-**1. Clone the repo and create a virtual environment**
+## Features
+
+### 1. Documents · OCR Pipeline (Assignment #6)
+* **Image Preprocessing**: Auto-deskewing tilted scans, bilateral denoising, CLAHE contrast boost, and border removal via OpenCV.
+* **Dual Extraction**: EasyOCR extracts precise text token bounding boxes; Gemini Vision classifies document type (Invoice, Receipt, Business Card, Form, ID, Contract) and extracts structured key-value pairs.
+* **Table & Line Items**: Extracts tabular row/column data with cell-level precision.
+* **Interactive Bounding Box Review**: Color-coded overlays (Names: Orange, Dates: Blue, IDs: Purple, Amounts: Green, Tables: Teal).
+* **Export**: Formatted multi-tab Excel (`.xlsx`), CSV, and JSON.
+* **RAG Bridge**: "Approve & add to Q&A" directly indexes extracted documents into the RAG vector store.
+
+### 2. AI Content Studio
+* Brand voice customization and multi-channel content generation (LinkedIn, Twitter/X, Blogs, Newsletters).
+* Content repurposing pipeline powered by Groq.
+
+### 3. Excellence Q&A RAG
+* Chunking and local dense embeddings (`all-MiniLM-L6-v2`).
+* Exact cosine similarity retrieval using FAISS vector indexing.
+* Grounded answer generation with strict zero-hallucination guardrails.
+
+---
+
+## Quick Setup
+
+### 1. Prerequisites
+* Python 3.10+
+* Node.js 18+
+
+### 2. Backend Setup
 ```bash
-git clone <your-repo-url>
-cd mini-rag-qa
+# Navigate to backend and create virtual environment
+cd backend
 python -m venv venv
-venv\Scripts\activate
-```
 
-**2. Install dependencies**
-```bash
+# Activate virtual environment (Windows)
+.\venv\Scripts\activate
+# (macOS/Linux: source venv/bin/activate)
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-**3. Add your API key**
-```bash
-create a .env file            
+### 3. Environment Configuration
+Copy `.env.example` or create a `.env` file in the project root:
+```env
+GEMINI_API_KEY=your_google_gemini_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
+JWT_SECRET=your_secret_key_here
 ```
 
-## Usage
-
-**Command line**
+### 4. Frontend Setup
 ```bash
-python app.py                                  # uses the sample document
-python app.py path/to/your_file.pdf            # uses your own document
-python app.py --show-sources                   # also shows the retrieved chunks
+cd frontend
+npm install
 ```
 
-**Simple web UI**
+---
+
+## Running the Application
+
+### Start the Backend
 ```bash
-streamlit run ui.py
+# From project root with venv activated
+uvicorn backend.main:app --reload --port 8000
 ```
+API Documentation will be available at: `http://127.0.0.1:8000/docs`
 
-### Example
+### Start the Frontend
+```bash
+cd frontend
+npm run dev
+```
+Open your browser at: `http://localhost:5173`
 
-See [`test_queries.md`](test_queries.md) for the full list of test questions.
+---
 
-## How hallucination is prevented
+## Running the Standalone OCR Pipeline Test
 
-1. **Strict prompt.** The LLM is told to answer only from the given context, and to reply with a fixed "couldn't find" message if the answer isn't there.
-2. **Temperature 0.** The model gives deterministic, factual answers instead of creative ones.
-3. **Similarity threshold.** If even the best-matching chunk has a similarity below `0.05`, the question is unrelated to the document. The system returns "not found" **without calling the LLM**.
-4. **Visible sources.** `--show-sources` (or the "Retrieved chunks" panel in the UI) shows exactly which text the answer came from.
-
-## Design choices
-
-- **Chunk size 200 words, overlap 40.** Small chunks keep each one focused on a single topic, so retrieval is precise. The overlap stops facts that sit on a chunk boundary from being cut in half.
-- **`all-MiniLM-L6-v2` embeddings.** Free, local, fast, and good enough for small documents. No API cost for embeddings.
-- **`IndexFlatIP` in FAISS.** Exact search on normalized vectors, which equals cosine similarity. For a small document, exact search is instant, so approximate indexes aren't needed.
-- **No LangChain.** Every step is written by hand to keep the pipeline easy to read and explain.
-
-All settings (`CHUNK_SIZE`, `CHUNK_OVERLAP`, `TOP_K`, `MIN_SIMILARITY`) are at the top of `rag/pipeline.py`.
-
-## Tech stack
-
-Python · pypdf · Sentence Transformers · FAISS · Google Gemini / OpenAI · Streamlit
+To verify OpenCV deskewing, EasyOCR bounding boxes, and Gemini Vision extraction without opening the browser:
+```bash
+python backend/ocr/test_pipeline.py
+```
+This script programmatically generates a tilted invoice scan, auto-deskews it, extracts tokens and structured fields, and saves the annotated bounding-box image to `sample_documents/invoices/sample_annotated_output.jpg`.

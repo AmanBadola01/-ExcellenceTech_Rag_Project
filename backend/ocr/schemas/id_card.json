@@ -1,0 +1,13 @@
+{
+  "document_type": "ID Card",
+  "fields": [
+    { "name": "full_name", "label": "Full Name", "category": "Names", "color": "#f97316", "required": true },
+    { "name": "id_number", "label": "ID / Passport #", "category": "IDs", "color": "#a855f7", "required": true },
+    { "name": "date_of_birth", "label": "Date of Birth", "category": "Dates", "color": "#3b82f6", "required": false },
+    { "name": "nationality", "label": "Nationality", "category": "Names", "color": "#f97316", "required": false },
+    { "name": "issue_date", "label": "Issue Date", "category": "Dates", "color": "#3b82f6", "required": false },
+    { "name": "expiry_date", "label": "Expiry Date", "category": "Dates", "color": "#3b82f6", "required": false },
+    { "name": "address", "label": "Address", "category": "Names", "color": "#f97316", "required": false }
+  ]
+}
+

@@ -1,0 +1,13 @@
+{
+  "document_type": "Business Card",
+  "fields": [
+    { "name": "full_name", "label": "Full Name", "category": "Names", "color": "#f97316", "required": true },
+    { "name": "job_title", "label": "Job Title", "category": "Names", "color": "#f97316", "required": false },
+    { "name": "company", "label": "Company", "category": "Names", "color": "#f97316", "required": false },
+    { "name": "email", "label": "Email", "category": "IDs", "color": "#a855f7", "required": false },
+    { "name": "phone", "label": "Phone", "category": "IDs", "color": "#a855f7", "required": false },
+    { "name": "website", "label": "Website", "category": "IDs", "color": "#a855f7", "required": false },
+    { "name": "address", "label": "Address", "category": "Names", "color": "#f97316", "required": false }
+  ]
+}
+

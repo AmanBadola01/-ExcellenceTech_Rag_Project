@@ -1,0 +1,20 @@
+{
+  "document_type": "Invoice",
+  "fields": [
+    { "name": "vendor_name", "label": "Vendor", "category": "Names", "color": "#f97316", "required": true },
+    { "name": "invoice_number", "label": "Invoice #", "category": "IDs", "color": "#a855f7", "required": true },
+    { "name": "invoice_date", "label": "Date", "category": "Dates", "color": "#3b82f6", "required": true },
+    { "name": "due_date", "label": "Due date", "category": "Dates", "color": "#3b82f6", "required": false },
+    { "name": "customer_name", "label": "Customer", "category": "Names", "color": "#f97316", "required": false },
+    { "name": "subtotal", "label": "Subtotal", "category": "Amounts", "color": "#22c55e", "required": false },
+    { "name": "tax_amount", "label": "Tax", "category": "Amounts", "color": "#22c55e", "required": false },
+    { "name": "total_amount", "label": "Total", "category": "Amounts", "color": "#22c55e", "required": true },
+    { "name": "currency", "label": "Currency", "category": "Amounts", "color": "#22c55e", "required": false },
+    { "name": "bank_details", "label": "Bank / Payment Terms", "category": "IDs", "color": "#a855f7", "required": false }
+  ],
+  "table": {
+    "name": "Line items",
+    "columns": ["Description", "Qty", "Unit price", "Amount"]
+  }
+}
+

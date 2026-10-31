@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 type ChatSummary = { id: string; title: string };
 
-type Mode = "qa" | "studio";
+type Mode = "qa" | "studio" | "ocr";
 
 // ── Studio nav items ────────────────────────────────────────────────────────
 const STUDIO_NAV = [
@@ -76,8 +76,10 @@ export function Sidebar({
   const switchTo = (target: Mode) => {
     if (target === "qa") {
       void router.navigate({ to: "/chat" });
-    } else {
+    } else if (target === "studio") {
       void router.navigate({ to: "/studio/projects" });
+    } else {
+      void router.navigate({ to: "/ocr" });
     }
     onClose();
   };
@@ -124,7 +126,7 @@ export function Sidebar({
               type="button"
               onClick={() => switchTo("qa")}
               className={cn(
-                "flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                "flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition-colors text-center",
                 mode === "qa"
                   ? "bg-background text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground",
@@ -136,13 +138,25 @@ export function Sidebar({
               type="button"
               onClick={() => switchTo("studio")}
               className={cn(
-                "flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                "flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition-colors text-center",
                 mode === "studio"
                   ? "bg-background text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
               Studio
+            </button>
+            <button
+              type="button"
+              onClick={() => switchTo("ocr")}
+              className={cn(
+                "flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition-colors text-center",
+                mode === "ocr"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              OCR
             </button>
           </div>
         </div>

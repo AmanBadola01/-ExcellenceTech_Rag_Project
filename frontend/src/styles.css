@@ -1,6 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "./styles/vantage.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -271,4 +272,5 @@
 .typing-dot:nth-child(3) {
   animation-delay: 0.3s;
 }
+
 

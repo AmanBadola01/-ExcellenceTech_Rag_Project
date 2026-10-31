@@ -1,15 +1,26 @@
+# ── Core & Server ──────────────────────────────────
+fastapi
+uvicorn
+python-dotenv
+python-multipart
+bcrypt            # Password hashing algorithm
+pyjwt
+
+# ── RAG & Embeddings ───────────────────────────────
 pypdf>=4.0
 sentence-transformers>=2.7
 faiss-cpu>=1.8
 numpy
-python-dotenv
-google-genai      # for Gemini 
-streamlit         # only needed for the simple web UI (ui.py)
+google-genai      # for Gemini
 
-bcrypt            # Password hashing algorithm 
-fastapi
-uvicorn
-pyjwt
+# ── AI Content Studio ──────────────────────────────
 groq
-groq
+
+# ── AI Document Processing & OCR Pipeline ──────────
+opencv-python-headless>=4.8  # Computer vision, deskew, CLAHE, binarization
+easyocr>=1.7                 # Neural OCR engine with bounding boxes
+PyMuPDF>=1.23                # High-speed PDF page rendering to images
+openpyxl>=3.1                # Excel (.xlsx) export
+pillow>=10.0                 # Image manipulation & bbox drawing
+pytesseract>=0.3             # OCR fallback engine
 

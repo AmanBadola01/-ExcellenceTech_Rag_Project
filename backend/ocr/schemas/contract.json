@@ -1,0 +1,12 @@
+{
+  "document_type": "Contract",
+  "fields": [
+    { "name": "parties", "label": "Parties", "category": "Names", "color": "#f97316", "required": true },
+    { "name": "effective_date", "label": "Effective Date", "category": "Dates", "color": "#3b82f6", "required": true },
+    { "name": "term_duration", "label": "Term / Duration", "category": "Dates", "color": "#3b82f6", "required": false },
+    { "name": "payment_terms", "label": "Payment Terms", "category": "Amounts", "color": "#22c55e", "required": false },
+    { "name": "governing_law", "label": "Governing Law", "category": "Names", "color": "#f97316", "required": false },
+    { "name": "signature_status", "label": "Signature Status", "category": "IDs", "color": "#a855f7", "required": false }
+  ]
+}
+

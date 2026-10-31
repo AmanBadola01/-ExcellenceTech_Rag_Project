@@ -1,0 +1,713 @@
+/* hallmark: 2.0.0; genre: modern-minimal; theme: vantage; subject: terrain/scan; */
+/* critique: Optical reality capture & document measurement instrument inspired by Swath / Vantage. */
+
+:root {
+  --vantage-paper: oklch(13.5% 0.012 235);
+  --vantage-paper-2: oklch(17% 0.014 235);
+  --vantage-paper-3: oklch(21% 0.016 235);
+  
+  --vantage-ink: oklch(95% 0.006 230);
+  --vantage-ink-2: oklch(82% 0.012 230);
+  --vantage-muted: oklch(66% 0.016 230);
+  
+  --vantage-rule: oklch(27% 0.014 235);
+  --vantage-rule-2: oklch(34% 0.016 235);
+  
+  /* Hallmark Chromatic Lime (Vantage Signal for Found / Measured / Live) */
+  --vantage-accent: oklch(89% 0.19 126);
+  --vantage-accent-hi: oklch(93% 0.17 126);
+  --vantage-accent-ink: oklch(19% 0.04 126);
+
+  --font-vantage-display: "Geologica", -apple-system, sans-serif;
+  --font-vantage-body: "Geologica", -apple-system, sans-serif;
+  --font-vantage-mono: "Geist Mono", monospace;
+  
+  --radius-vantage-card: 4px;
+  --radius-vantage-pill: 999px;
+  --vantage-tick: 10px;
+}
+
+/* Ambient Optical Scan Chamber Background Canvas */
+canvas#ambientBgCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.vantage-root {
+  background-color: var(--vantage-paper);
+  color: var(--vantage-ink);
+  font-family: var(--font-vantage-body);
+  font-weight: 300;
+  font-variation-settings: "SHRP" 0;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hallmark Corner Ticks */
+.vantage-ticks {
+  position: relative;
+}
+.vantage-ticks::before, .vantage-ticks::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 1px solid var(--vantage-rule-2);
+  -webkit-mask: conic-gradient(at var(--vantage-tick) var(--vantage-tick), transparent 75%, #000 0) 0 0 / calc(100% - var(--vantage-tick)) calc(100% - var(--vantage-tick));
+  mask: conic-gradient(at var(--vantage-tick) var(--vantage-tick), transparent 75%, #000 0) 0 0 / calc(100% - var(--vantage-tick)) calc(100% - var(--vantage-tick));
+}
+
+.vantage-num {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-vantage-mono);
+  font-weight: 400;
+}
+
+.vantage-num .u {
+  color: var(--vantage-muted);
+  font-size: 0.8em;
+  margin-left: 2px;
+}
+
+/* Buttons */
+.vantage-btn-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 20px;
+  border-radius: var(--radius-vantage-pill);
+  background: var(--vantage-accent);
+  color: var(--vantage-accent-ink);
+  font-family: var(--font-vantage-body);
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.vantage-btn-pill:hover {
+  background: var(--vantage-accent-hi);
+  box-shadow: 0 0 12px rgba(182, 255, 59, 0.4);
+}
+
+.vantage-btn-line {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: var(--radius-vantage-pill);
+  background: transparent;
+  color: var(--vantage-ink-2);
+  border: 1px solid var(--vantage-rule-2);
+  font-family: var(--font-vantage-body);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.vantage-btn-line:hover {
+  color: var(--vantage-ink);
+  border-color: var(--vantage-accent);
+  background: rgba(182, 255, 59, 0.05);
+}
+
+/* Master Navigation */
+header.vantage-nav {
+  height: 56px;
+  border-bottom: 1px solid var(--vantage-rule);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(18, 24, 32, 0.85);
+  backdrop-filter: blur(16px);
+}
+
+.vantage-nav .nav-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.vantage-service-menu {
+  position: relative;
+}
+
+.vantage-service-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: 1px solid var(--vantage-rule);
+  color: var(--vantage-ink);
+  font-family: var(--font-vantage-display);
+  font-size: 13px;
+  font-weight: 400;
+  padding: 6px 14px;
+  border-radius: var(--radius-vantage-pill);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.vantage-service-btn:hover {
+  border-color: var(--vantage-accent);
+}
+
+.vantage-lime-dot {
+  width: 7px;
+  height: 7px;
+  background-color: var(--vantage-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--vantage-accent);
+}
+
+.vantage-dropdown-tray {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 290px;
+  background: var(--vantage-paper-2);
+  border: 1px solid var(--vantage-rule);
+  border-radius: var(--radius-vantage-card);
+  padding: 6px;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  z-index: 100;
+}
+.vantage-dropdown-tray.open {
+  display: flex;
+}
+
+.vantage-dropdown-opt {
+  padding: 10px 12px;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--vantage-ink-2);
+  text-decoration: none;
+  font-size: 13px;
+  transition: background 0.12s ease;
+  cursor: pointer;
+}
+.vantage-dropdown-opt:hover {
+  background: var(--vantage-paper-3);
+  color: var(--vantage-ink);
+}
+.vantage-dropdown-opt.active {
+  background: rgba(182, 255, 59, 0.1);
+  color: var(--vantage-accent);
+  border-left: 2px solid var(--vantage-accent);
+}
+.vantage-dropdown-opt small {
+  font-size: 11px;
+  color: var(--vantage-muted);
+}
+
+/* View switcher */
+.vantage-view-toggles {
+  display: flex;
+  align-items: center;
+  background: var(--vantage-paper-2);
+  padding: 3px;
+  border-radius: var(--radius-vantage-pill);
+  border: 1px solid var(--vantage-rule);
+}
+
+.vantage-view-tab {
+  background: transparent;
+  border: none;
+  color: var(--vantage-muted);
+  font-family: var(--font-vantage-body);
+  font-size: 12px;
+  padding: 5px 14px;
+  border-radius: var(--radius-vantage-pill);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.vantage-view-tab.active {
+  background: var(--vantage-paper);
+  color: var(--vantage-ink);
+  font-weight: 400;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.vantage-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Section 1: Ingestion Deck */
+.vantage-section-ingestion {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  position: relative;
+  z-index: 10;
+}
+
+.vantage-ingestion-hero {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.vantage-hero-statement h1 {
+  font-size: 40px;
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+  color: var(--vantage-ink);
+  margin-bottom: 16px;
+  font-variation-settings: "SHRP" 100;
+}
+.vantage-hero-statement p {
+  font-size: 15px;
+  color: var(--vantage-ink-2);
+  line-height: 1.6;
+  max-width: 520px;
+}
+
+/* Vantage Optical Drop Target */
+.vantage-optical-drop {
+  background: rgba(22, 28, 38, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--vantage-rule);
+  border-radius: var(--radius-vantage-card);
+  padding: 40px 32px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+.vantage-optical-drop:hover {
+  border-color: var(--vantage-accent);
+}
+
+.vantage-scanner-reticle {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 18px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.vantage-scanner-reticle svg {
+  color: var(--vantage-accent);
+}
+
+.vantage-reticle-ring {
+  position: absolute;
+  inset: 0;
+  border: 1px dashed var(--vantage-accent);
+  border-radius: 50%;
+  animation: vantageRotateRing 18s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes vantageRotateRing {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.vantage-drop-heading {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--vantage-ink);
+  margin-bottom: 6px;
+}
+
+.vantage-drop-sub {
+  font-size: 13px;
+  color: var(--vantage-muted);
+}
+
+/* Capture Log Table */
+.vantage-scan-log-block {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.vantage-log-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.vantage-log-header h2 {
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--vantage-ink);
+}
+
+.vantage-log-table-frame {
+  background: rgba(22, 28, 38, 0.75);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--vantage-rule);
+  border-radius: var(--radius-vantage-card);
+  overflow: hidden;
+}
+
+table.vantage-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+table.vantage-table th {
+  padding: 12px 18px;
+  text-align: left;
+  font-size: 11px;
+  color: var(--vantage-muted);
+  border-bottom: 1px solid var(--vantage-rule);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+table.vantage-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--vantage-rule);
+  color: var(--vantage-ink-2);
+}
+
+table.vantage-table tr:last-child td {
+  border-bottom: none;
+}
+
+table.vantage-table tr.active-row td {
+  background: var(--vantage-paper-3);
+  color: var(--vantage-ink);
+}
+
+table.vantage-table tr:hover td {
+  background: var(--vantage-paper-3);
+  cursor: pointer;
+}
+
+.vantage-row-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--vantage-muted);
+  margin-right: 8px;
+}
+.vantage-row-dot.live {
+  background: var(--vantage-accent);
+  box-shadow: 0 0 8px var(--vantage-accent);
+}
+
+/* Section 2: Review Desk */
+.vantage-section-review {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(460px, 1fr);
+  height: calc(100vh - 56px);
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+}
+
+.vantage-optical-stage {
+  background: transparent;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--vantage-rule);
+}
+
+.vantage-stage-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: rgba(14, 18, 23, 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--vantage-rule);
+  font-size: 11px;
+  color: var(--vantage-muted);
+  z-index: 20;
+}
+.vantage-stage-hud strong {
+  color: var(--vantage-ink);
+}
+
+.vantage-viewport-canvas {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: auto;
+  padding: 40px;
+  background: transparent;
+}
+
+.vantage-document-envelope {
+  width: 580px;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: var(--radius-vantage-card);
+  position: relative;
+  padding: 40px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9);
+  user-select: none;
+}
+
+/* Canvas telemetry overlay */
+canvas#pointCloudCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 25;
+  border-radius: var(--radius-vantage-card);
+}
+
+/* Optical hairline brackets */
+.vantage-optical-bracket {
+  position: absolute;
+  pointer-events: auto;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.15s ease;
+}
+.vantage-optical-bracket.found {
+  border-color: var(--vantage-accent);
+  background: rgba(182, 255, 59, 0.08);
+}
+.vantage-optical-bracket.active {
+  box-shadow: 0 0 0 2px var(--vantage-accent);
+  background: rgba(182, 255, 59, 0.2) !important;
+}
+
+.vantage-optical-bracket .corner-tick {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-color: var(--vantage-accent);
+}
+.vantage-optical-bracket .tick-tl { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
+.vantage-optical-bracket .tick-br { bottom: -1px; right: -1px; border-bottom: 2px solid; border-right: 2px solid; }
+
+/* The Measurement Inspector (Right) */
+.vantage-measurement-inspector {
+  background: rgba(18, 24, 32, 0.85);
+  backdrop-filter: blur(16px);
+  border-left: 1px solid var(--vantage-rule);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.vantage-telemetry-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: var(--vantage-paper);
+  border-bottom: 1px solid var(--vantage-rule);
+}
+
+.vantage-telemetry-pills {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+}
+.vantage-telemetry-pills span {
+  background: var(--vantage-paper-2);
+  border: 1px solid var(--vantage-rule-2);
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: var(--vantage-ink-2);
+}
+.vantage-telemetry-pills span strong {
+  color: var(--vantage-accent);
+  font-weight: 500;
+}
+
+.vantage-inspector-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  flex: 1;
+}
+
+.vantage-inspector-heading {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--vantage-muted);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.vantage-measured-grid {
+  border: 1px solid var(--vantage-rule);
+  border-radius: var(--radius-vantage-card);
+  background: var(--vantage-paper);
+  overflow: hidden;
+}
+
+.vantage-measure-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 60px;
+  padding: 10px 14px;
+  align-items: center;
+  border-bottom: 1px solid var(--vantage-rule);
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.1s ease;
+}
+.vantage-measure-row:last-child {
+  border-bottom: none;
+}
+.vantage-measure-row:hover, .vantage-measure-row.active {
+  background: var(--vantage-paper-3);
+}
+.vantage-measure-row.active {
+  box-shadow: inset 3px 0 0 var(--vantage-accent);
+}
+
+.vantage-measure-label {
+  color: var(--vantage-muted);
+  font-size: 12px;
+}
+
+.vantage-measure-val input {
+  background: transparent;
+  border: none;
+  color: var(--vantage-ink);
+  font-family: var(--font-vantage-display);
+  font-size: 13px;
+  width: 100%;
+  outline: none;
+}
+.vantage-measure-val input:focus {
+  background: var(--vantage-paper-2);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.vantage-measure-conf {
+  text-align: right;
+  color: var(--vantage-accent);
+  font-size: 12px;
+}
+
+/* Line items matrix */
+.vantage-table-container {
+  border: 1px solid var(--vantage-rule);
+  border-radius: var(--radius-vantage-card);
+  background: var(--vantage-paper);
+  overflow: hidden;
+}
+
+table.vantage-matrix-inspect {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+table.vantage-matrix-inspect th {
+  padding: 8px 12px;
+  background: var(--vantage-paper-3);
+  color: var(--vantage-muted);
+  text-align: left;
+  font-size: 11px;
+  border-bottom: 1px solid var(--vantage-rule);
+  font-weight: 400;
+}
+table.vantage-matrix-inspect td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--vantage-rule);
+  color: var(--vantage-ink);
+}
+table.vantage-matrix-inspect tr:last-child td {
+  border-bottom: none;
+}
+table.vantage-matrix-inspect input {
+  background: transparent;
+  border: none;
+  color: var(--vantage-ink);
+  font-family: var(--font-vantage-display);
+  font-size: 12px;
+  width: 100%;
+  outline: none;
+}
+table.vantage-matrix-inspect input:focus {
+  background: var(--vantage-paper-2);
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.vantage-inspector-footer {
+  padding: 16px 24px;
+  background: var(--vantage-paper);
+  border-top: 1px solid var(--vantage-rule);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Toast HUD */
+.vantage-toast {
+  position: fixed;
+  top: 72px;
+  right: 24px;
+  z-index: 9999;
+  background: rgba(14, 20, 28, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--vantage-accent);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7), 0 0 16px rgba(182, 255, 59, 0.25);
+  border-radius: var(--radius-vantage-pill);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-vantage-mono);
+  font-size: 12px;
+  color: var(--vantage-ink);
+  animation: vantageToastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes vantageToastIn {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.vantage-toast-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--vantage-accent);
+  box-shadow: 0 0 8px var(--vantage-accent);
+  flex-shrink: 0;
+}
+

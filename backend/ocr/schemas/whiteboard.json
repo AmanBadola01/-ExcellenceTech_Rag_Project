@@ -1,0 +1,10 @@
+{
+  "document_type": "Whiteboard",
+  "fields": [
+    { "name": "topic", "label": "Topic / Title", "category": "Names", "color": "#f97316", "required": false },
+    { "name": "meeting_date", "label": "Date", "category": "Dates", "color": "#3b82f6", "required": false },
+    { "name": "key_points", "label": "Key Points", "category": "Names", "color": "#f97316", "required": false },
+    { "name": "action_items", "label": "Action Items", "category": "IDs", "color": "#a855f7", "required": false }
+  ]
+}
+

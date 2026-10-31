@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as OcrRouteImport } from './routes/ocr'
 import { Route as StudioRouteImport } from './routes/studio'
 import { Route as StudioBrandVoicesRouteImport } from './routes/studio/brand-voices'
 import { Route as StudioCompanyRouteImport } from './routes/studio/company'
@@ -36,6 +37,11 @@ const ChatRoute = ChatRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OcrRoute = OcrRouteImport.update({
+  id: '/ocr',
+  path: '/ocr',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StudioRoute = StudioRouteImport.update({
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
   '/login': typeof LoginRoute
+  '/ocr': typeof OcrRoute
   '/studio': typeof StudioRouteWithChildren
   '/studio/brand-voices': typeof StudioBrandVoicesRoute
   '/studio/company': typeof StudioCompanyRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
   '/login': typeof LoginRoute
+  '/ocr': typeof OcrRoute
   '/studio': typeof StudioRouteWithChildren
   '/studio/brand-voices': typeof StudioBrandVoicesRoute
   '/studio/company': typeof StudioCompanyRoute
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
   '/login': typeof LoginRoute
+  '/ocr': typeof OcrRoute
   '/studio': typeof StudioRouteWithChildren
   '/studio/brand-voices': typeof StudioBrandVoicesRoute
   '/studio/company': typeof StudioCompanyRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/'
     | '/chat'
     | '/login'
+    | '/ocr'
     | '/studio'
     | '/studio/brand-voices'
     | '/studio/company'
@@ -156,6 +166,7 @@ export interface FileRouteTypes {
     | '/'
     | '/chat'
     | '/login'
+    | '/ocr'
     | '/studio'
     | '/studio/brand-voices'
     | '/studio/company'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | '/'
     | '/chat'
     | '/login'
+    | '/ocr'
     | '/studio'
     | '/studio/brand-voices'
     | '/studio/company'
@@ -185,6 +197,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ChatRoute: typeof ChatRoute
   LoginRoute: typeof LoginRoute
+  OcrRoute: typeof OcrRoute
   StudioRoute: typeof StudioRouteWithChildren
 }
 
@@ -209,6 +222,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ocr': {
+      id: '/ocr'
+      path: '/ocr'
+      fullPath: '/ocr'
+      preLoaderRoute: typeof OcrRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/studio': {
@@ -337,6 +357,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ChatRoute: ChatRoute,
   LoginRoute: LoginRoute,
+  OcrRoute: OcrRoute,
   StudioRoute: StudioRouteWithChildren,
 }
 export const routeTree = rootRouteImport

@@ -5,3 +5,12 @@ node_modules/
 dist/
 .env
 *.db
+UI_Manual_Test_Suite.pdf
+phase.txt
+Assignment_04_AI_Content_Generation_Platform.pdf
+backend/data/ocr_uploads/
+backend/data/ocr_rag_docs/
+frontend/ocr_preview.html
+frontend/screenshot_review.png
+*.log
+

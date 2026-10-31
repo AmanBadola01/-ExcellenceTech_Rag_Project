@@ -7,7 +7,8 @@ from fastapi import APIRouter, Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from core.config import ALLOWED_ORIGINS
+import os
+from core.config import ALLOWED_ORIGINS, DATA_DIR
 from core.database import init_core_db
 from core.security import create_token, get_current_user, verify_turnstile
 from core.auth import create_user, verify_user
@@ -16,8 +17,10 @@ from rag.pipeline import RAGPipeline
 from rag.router import router as rag_router
 from content.database import init_content_db
 from content.router import router as content_router
+from ocr.database import init_ocr_db
+from ocr.router import router as ocr_router
 
-DEFAULT_DOCUMENT = "data/company_policy.txt"
+DEFAULT_DOCUMENT = str(DATA_DIR / "company_policy.txt")
 
 
 @asynccontextmanager
@@ -26,10 +29,14 @@ async def lifespan(app: FastAPI):
     init_core_db()
     init_rag_db()
     init_content_db()
+    init_ocr_db()
 
     pipeline = RAGPipeline()
-    n = pipeline.index_document(DEFAULT_DOCUMENT)
-    print(f"[RAG] Indexed {DEFAULT_DOCUMENT} into {n} chunks.")
+    if os.path.exists(DEFAULT_DOCUMENT):
+        n = pipeline.index_document(DEFAULT_DOCUMENT)
+        print(f"[RAG] Indexed {DEFAULT_DOCUMENT} into {n} chunks.")
+    else:
+        print(f"[RAG Warning] {DEFAULT_DOCUMENT} not found; skipping initial indexing.")
     app.state.pipeline = pipeline
     yield
 
@@ -123,3 +130,7 @@ app.include_router(rag_router)
 
 # Mount Content Studio routes under /api/content
 app.include_router(content_router, prefix="/api/content")
+
+# Mount OCR Document Processing routes
+app.include_router(ocr_router, prefix="/api/ocr")
+app.include_router(ocr_router, prefix="/ocr")
